@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: elasticsearch-data
+  labels:
+    type: local
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+---
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: elasticsearch
+spec:
+  version: 7.16.2
+  nodeSets:
+    - name: default
+      count: 1
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            storageClassName: standard
+            resources:
+              requests:
+                storage: 10Gi
+      config:
+        node.master: true
+        node.data: true
+        node.ingest: true
+        node.store.allow_mmap: false
