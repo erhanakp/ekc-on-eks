@@ -80,6 +80,16 @@ kubectl apply -f apm-server.yaml -n elastic-system
 
 ## 8 Configure APM Agent
 
+add 
+annotations 
+
+    co.elastic.logs/json.overwrite_keys: "true"
+    co.elastic.logs/json.add_error_key: "true"
+    co.elastic.logs/json.expand_keys: "true"
+    co.elastic.logs.json-logging/json.keys_under_root: "true"
+    co.elastic.logs.json-logging/json.add_error_key: "true"
+    co.elastic.logs.json-logging/json.message_key: "message"
+
 zap integration:
 https://www.elastic.co/guide/en/beats/filebeat/current/running-on-kubernetes.html
 https://www.elastic.co/guide/en/ecs-logging/go-zap/master/setup.html
