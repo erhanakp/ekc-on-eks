@@ -10,6 +10,7 @@ spec:
   kibanaRef:
     name: kibana
   config:
+    logging.level: debug
     filebeat.autodiscover.providers:
     - node: ${NODE_NAME}
       type: kubernetes
@@ -19,9 +20,13 @@ spec:
         config:
         - paths: ["/var/log/containers/*${data.kubernetes.container.id}.log"]
           type: container
+          json.keys_under_root: true
+          json.add_error_key: true
+          json.message_key: message
     processors:
     - add_cloud_metadata: {}
     - add_host_metadata: {}
+    - add_kubernetes_metadata: {}
   daemonSet:
     podTemplate:
       spec:

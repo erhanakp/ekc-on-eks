@@ -80,4 +80,6 @@ kubectl apply -f apm-server.yaml -n elastic-system
 
 ## 8 Configure APM Agent
 
-To be continued...
+zap integration:
+https://www.elastic.co/guide/en/beats/filebeat/current/running-on-kubernetes.html
+https://www.elastic.co/guide/en/ecs-logging/go-zap/master/setup.html
