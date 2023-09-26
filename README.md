@@ -112,6 +112,14 @@ These environment variables are required for connecting the APM Agent to the APM
 
 Logger configuration for the APM Agent
 
+Packages
+```golang
+    "go.elastic.co/apm"
+	"go.elastic.co/apm/module/apmhttp"
+	"go.elastic.co/apm/module/apmzap"
+	"go.uber.org/zap"
+```
+
 ```golang
     encoderConfig := ecszap.NewDefaultEncoderConfig()
 	core := ecszap.NewCore(encoderConfig, os.Stdout, logLevel)
