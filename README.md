@@ -82,7 +82,7 @@ kubectl apply -f apm-server.yaml -n elastic-system
 
 For configuring the APM Agent, add the following annotations to the deployment file
 
-```bash 
+```yaml 
     co.elastic.logs/json.overwrite_keys: "true"
     co.elastic.logs/json.add_error_key: "true"
     co.elastic.logs/json.expand_keys: "true"
@@ -99,11 +99,53 @@ For more information, see the following links:
 
 Add the following environment variables to the deployment file
 
-```bash
+```yaml
     - name: ELASTIC_APM_SERVER_URL
       value: "http://apm-server.apm-system.svc:8200"
     - name: ELASTIC_APM_SECRET_TOKEN
       value: "apm-server-token"
     - name: ELASTIC_APM_VERIFY_SERVER_CERT
       value: "false"
+```
+
+These environment variables are required for connecting the APM Agent to the APM Server.
+
+Logger configuration for the APM Agent
+
+```golang
+    encoderConfig := ecszap.NewDefaultEncoderConfig()
+	core := ecszap.NewCore(encoderConfig, os.Stdout, logLevel)
+	logger := zap.New(core,
+		zap.AddCaller(),
+		zap.Fields(
+			zap.String("service.name", "service-name"),
+			zap.String("service.version", "service-version"),
+			zap.String("service.environment", "service-environment"),
+			zap.String("event.dataset", "service-name"),
+		))
+```
+
+For http request wrapper
+
+```golang
+    func WrapHTTPHandler(l *zap.Logger, h RinkHTTPHandler) http.HandlerFunc {
+	    return func(w http.ResponseWriter, r *http.Request) {
+		    // Start a new Elastic APM transaction
+		    tx := apm.DefaultTracer.StartTransaction(r.URL.Path, "request")
+		    defer tx.End()
+
+		    // Set the transaction's context
+		    ctx := apm.ContextWithTransaction(r.Context(), tx)
+		    r = r.WithContext(ctx)
+
+		    // logger trace context
+		    traceContextFields := apmzap.TraceContext(r.Context())
+		    l = l.With(traceContextFields...)
+
+		    // Wrap the response writer with Elastic APM instrumentation
+		    apmRws, _ := apmhttp.WrapResponseWriter(w)
+
+            //... rest of the code
+        }
+    }
 ```
