@@ -80,16 +80,30 @@ kubectl apply -f apm-server.yaml -n elastic-system
 
 ## 8 Configure APM Agent
 
-add 
-annotations 
+For configuring the APM Agent, add the following annotations to the deployment file
 
+```bash 
     co.elastic.logs/json.overwrite_keys: "true"
     co.elastic.logs/json.add_error_key: "true"
     co.elastic.logs/json.expand_keys: "true"
     co.elastic.logs.json-logging/json.keys_under_root: "true"
     co.elastic.logs.json-logging/json.add_error_key: "true"
     co.elastic.logs.json-logging/json.message_key: "message"
+```
 
-zap integration:
-https://www.elastic.co/guide/en/beats/filebeat/current/running-on-kubernetes.html
-https://www.elastic.co/guide/en/ecs-logging/go-zap/master/setup.html
+These annotations are required for parsing the logs. 
+
+For more information, see the following links:
+ - https://www.elastic.co/guide/en/beats/filebeat/current/running-on-kubernetes.html
+ - https://www.elastic.co/guide/en/ecs-logging/go-zap/master/setup.html
+
+Add the following environment variables to the deployment file
+
+```bash
+    - name: ELASTIC_APM_SERVER_URL
+      value: "http://apm-server.apm-system.svc:8200"
+    - name: ELASTIC_APM_SECRET_TOKEN
+      value: "apm-server-token"
+    - name: ELASTIC_APM_VERIFY_SERVER_CERT
+      value: "false"
+```
