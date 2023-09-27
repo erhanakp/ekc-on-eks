@@ -10,7 +10,7 @@ spec:
   kibanaRef:
     name: kibana
   config:
-    logging.level: debug
+    #logging.level: debug
     filebeat.autodiscover.providers:
     - node: ${NODE_NAME}
       type: kubernetes
