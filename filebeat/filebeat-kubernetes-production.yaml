@@ -118,7 +118,7 @@ data:
         type: kubernetes
         hints.default_config.enabled: "false"
         templates:
-        - condition.equals.kubernetes.namespace: test # namespace name to monitor
+        - condition.equals.kubernetes.namespace: production # namespace name to monitor
           config:
           - paths: ["/var/log/containers/*${data.kubernetes.container.id}.log"]
             type: container
@@ -142,8 +142,8 @@ data:
             to: "url.name"
           ignore_missing: true
     
-    cloud.id: Madduck:ZXUtY2VudHJhbC0xLmF3cy5jbG91ZC5lcy5pbzo0NDMkMTc3MjNkNTZmMjhmNDljY2E0ZjdkMDA0YWJhZWQ5MzkkNDYxOTEzZjJjZDk5NGM4MmEzMDJjMWIxZjZmNWQxOTU=
-    cloud.auth: elastic:7DC5hmLx1PAoisqef8CLVeFY
+    cloud.id: # your cloud id exampe --> foo:xxx
+    cloud.auth: # your cloud auth example --> foo:xxx
 ---
 apiVersion: apps/v1
 kind: DaemonSet
@@ -174,9 +174,9 @@ spec:
         ]
         env:
         - name: ELASTIC_CLOUD_ID
-          value: Madduck:ZXUtY2VudHJhbC0xLmF3cy5jbG91ZC5lcy5pbzo0NDMkMTc3MjNkNTZmMjhmNDljY2E0ZjdkMDA0YWJhZWQ5MzkkNDYxOTEzZjJjZDk5NGM4MmEzMDJjMWIxZjZmNWQxOTU=
+          value: # your cloud id exampe --> foo:xxx
         - name: ELASTIC_CLOUD_AUTH
-          value: elastic:7DC5hmLx1PAoisqef8CLVeFY
+          value: # your cloud auth example --> foo:xxx
         - name: NODE_NAME
           valueFrom:
             fieldRef:
